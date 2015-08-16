@@ -85,7 +85,7 @@ module RallyUserManagement
 
       # fetch data
       @initial_user_fetch            = "UserName,FirstName,LastName,DisplayName"
-      @detail_user_fetch             = "UserName,FirstName,LastName,DisplayName,UserPermissions,Name,Role,Workspace,ObjectID,Project,ObjectID,TeamMemberships,UserProfile,SubscriptionAdmin"
+      @detail_user_fetch             = "UserName,FirstName,LastName,DisplayName,Disabled,UserPermissions,Name,Role,Workspace,ObjectID,Project,ObjectID,TeamMemberships,UserProfile,SubscriptionAdmin"
 
     end
 

@@ -89,16 +89,18 @@ def is_workspace_admin(user, project)
     this_workspace = project["Workspace"]
     this_workspace_oid = this_workspace["ObjectID"].to_s
 
-    user_permissions.each do  | this_permission |
-        if this_permission._type == "WorkspacePermission" then
-            if this_permission.Workspace.ObjectID.to_s == this_workspace_oid then
-                permission_level = this_permission.Role
-                if permission_level == $ADMIN then
-                    is_admin = true
-                    break
-                end
-            end
-        end
+    if !user_permissions.nil? then
+      user_permissions.each do  | this_permission |
+          if this_permission._type == "WorkspacePermission" then
+              if this_permission.Workspace.ObjectID.to_s == this_workspace_oid then
+                  permission_level = this_permission.Role
+                  if permission_level == $ADMIN then
+                      is_admin = true
+                      break
+                  end
+              end
+          end
+      end
     end
     return is_admin
 end
@@ -108,16 +110,18 @@ def is_project_admin(user, project)
     user_permissions = user["UserPermissions"]
     this_project_oid = project["ObjectID"].to_s
 
-    user_permissions.each do  | this_permission |
-        if this_permission._type == "ProjectPermission" then
-            if this_permission.Project.ObjectID.to_s == this_project_oid then
-                permission_level = this_permission.Role
-                if permission_level == $ADMIN then
-                    is_admin = true
-                    break
-                end
-            end
-        end
+    if !user_permissions.nil? then
+      user_permissions.each do  | this_permission |
+          if this_permission._type == "ProjectPermission" then
+              if this_permission.Project.ObjectID.to_s == this_project_oid then
+                  permission_level = this_permission.Role
+                  if permission_level == $ADMIN then
+                      is_admin = true
+                      break
+                  end
+              end
+          end
+      end
     end
     return is_admin
 end

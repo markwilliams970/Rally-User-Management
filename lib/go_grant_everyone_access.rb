@@ -96,13 +96,15 @@ def is_workspace_admin(user, project)
     this_workspace = project["Workspace"]
     this_workspace_oid = this_workspace["ObjectID"].to_s
 
-    user_permissions.each do  | this_permission |
-        if this_permission._type == "WorkspacePermission" then
-            if this_permission.Workspace.ObjectID.to_s == this_workspace_oid then
-                permission_level = this_permission.Role
-                if permission_level == $ADMIN then
-                    is_admin = true
-                    break
+    if !user_permissions.nil? then
+        user_permissions.each do  | this_permission |
+            if this_permission._type == "WorkspacePermission" then
+                if this_permission.Workspace.ObjectID.to_s == this_workspace_oid then
+                    permission_level = this_permission.Role
+                    if permission_level == $ADMIN then
+                        is_admin = true
+                        break
+                    end
                 end
             end
         end

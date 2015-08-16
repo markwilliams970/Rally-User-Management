@@ -66,8 +66,8 @@ my_vars= File.dirname(__FILE__) + "/../my_vars.rb"
 if FileTest.exist?( my_vars ) then require my_vars end
 
 $initial_fetch            = "UserName,FirstName,LastName,DisplayName"
-$standard_detail_fetch    = "UserName,FirstName,LastName,DisplayName,UserPermissions,Name,Role,Workspace,ObjectID,State,Project,ObjectID,State,TeamMemberships"
-$extended_detail_fetch    = "UserName,FirstName,LastName,DisplayName,UserPermissions,Name,Role,Workspace,ObjectID,State,Project,ObjectID,State,TeamMemberships,LastLoginDate,Disabled,NetworkID,Role,CostCenter,Department,OfficeLocation"
+$standard_detail_fetch    = "UserName,FirstName,LastName,DisplayName,Disabled,UserPermissions,Name,Role,Workspace,ObjectID,State,Project,ObjectID,State,TeamMemberships"
+$extended_detail_fetch    = "UserName,FirstName,LastName,DisplayName,Disabled,UserPermissions,Name,Role,Workspace,ObjectID,State,Project,ObjectID,State,TeamMemberships,LastLoginDate,Disabled,NetworkID,Role,CostCenter,Department,OfficeLocation"
 
 $enabled_only_filter      = "(Disabled = \"False\")"
 
@@ -105,13 +105,15 @@ def is_workspace_admin(user, project)
     this_workspace = project["Workspace"]
     this_workspace_oid = this_workspace["ObjectID"].to_s
 
-    user_permissions.each do  | this_permission |
-        if this_permission._type == "WorkspacePermission" then
-            if this_permission.Workspace.ObjectID.to_s == this_workspace_oid then
-                permission_level = this_permission.Role
-                if permission_level == $ADMIN then
-                    is_admin = true
-                    break
+    if !user_permissions.nil? then
+        user_permissions.each do  | this_permission |
+            if this_permission._type == "WorkspacePermission" then
+                if this_permission.Workspace.ObjectID.to_s == this_workspace_oid then
+                    permission_level = this_permission.Role
+                    if permission_level == $ADMIN then
+                        is_admin = true
+                        break
+                    end
                 end
             end
         end
@@ -186,27 +188,34 @@ def summarize_user(this_user, project)
     team_memberships = this_user["TeamMemberships"]
     team_member = is_team_member(project_oid, team_memberships)
 
-    @logger.info "Summarizing #{this_user.UserName}'s permissions in Project #{project_name}"
+
+    # Only output summary if the user is not Disabled
 
     output_record = []
-    output_record << this_user.UserName
-    output_record << this_user.LastName
-    output_record << this_user.FirstName
-    output_record << this_user.DisplayName
-    output_record << $type_projectpermission
-    output_record << workspace_name
-    output_record << project_name
-    output_record << this_user_role
-    output_record << team_member
-    output_record << project_oid
-    output_record << this_user.Disabled
-    if $summary_mode == :extended then
-        output_record << this_user.LastLoginDate
-        output_record << this_user.NetworkID
-        output_record << this_user.Role
-        output_record << this_user.CostCenter
-        output_record << this_user.Department
-        output_record << this_user.OfficeLocation
+
+    if $summarize_enabled_only && !this_user.Disabled then
+
+        @logger.info "Summarizing #{this_user.UserName}'s permissions in Project #{project_name}"
+
+        output_record << this_user.UserName
+        output_record << this_user.LastName
+        output_record << this_user.FirstName
+        output_record << this_user.DisplayName
+        output_record << $type_projectpermission
+        output_record << workspace_name
+        output_record << project_name
+        output_record << this_user_role
+        output_record << team_member
+        output_record << project_oid
+        output_record << this_user.Disabled
+        if $summary_mode == :extended then
+            output_record << this_user.LastLoginDate
+            output_record << this_user.NetworkID
+            output_record << this_user.Role
+            output_record << this_user.CostCenter
+            output_record << this_user.Department
+            output_record << this_user.OfficeLocation
+        end
     end
     return output_record
 end
