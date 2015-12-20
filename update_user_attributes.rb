@@ -20,7 +20,6 @@
 
 #include for rally json library gem
 require 'rally_api'
-require 'rally_user_management'
 require 'csv'
 require './lib/go_update_user_attributes.rb'
 

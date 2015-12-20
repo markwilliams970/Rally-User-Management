@@ -892,15 +892,24 @@ module RallyUserManagement
     def sync_project_permissions(source_user_id, target_user_id)
       source_user = find_user(source_user_id)
       target_user = find_user(target_user_id)
+
+      # Check to make sure source and target users exist
       if source_user.nil? then
         @logger.warn "  Source user: #{source_user_id} Not found. Skipping sync of permissions to #{target_user_id}."
         return
       elsif target_user.nil then
         @logger.warn "  Target user: #{target_user_id} Not found. Skipping sync of permissions for #{target_user_id}."
+        return
       end
 
+      # Check to make sure source user has permissions
       permissions_existing = target_user.UserPermissions
       source_permissions = source_user.UserPermissions
+
+      if source_permissions.nil? then
+        @logger.warn "  Source user: #{source_user_id} does not have any permissions assigned Skipping sync of permissions to #{target_user_id}."
+        return
+      end
 
       # build permission hashes by Project ObjectID
       source_permissions_by_project = {}
@@ -1037,10 +1046,17 @@ module RallyUserManagement
         return
       elsif target_user.nil then
         @logger.warn "  Target user: #{target_user_id} Not found. Skipping sync of permissions for #{target_user_id}."
+        return
       end
 
+      # Check to make sure source user has permissions
       permissions_existing = target_user.UserPermissions
       source_permissions = source_user.UserPermissions
+
+      if source_permissions.nil? then
+        @logger.warn "  Source user: #{source_user_id} does not have any permissions assigned Skipping sync of permissions to #{target_user_id}."
+        return
+      end      
 
       # build permission hashes by Workspace ObjectID
       source_permissions_by_workspace = {}
