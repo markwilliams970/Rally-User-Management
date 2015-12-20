@@ -907,7 +907,7 @@ module RallyUserManagement
       source_permissions = source_user.UserPermissions
 
       if source_permissions.nil? then
-        @logger.warn "  Source user: #{source_user_id} does not have any permissions assigned Skipping sync of permissions to #{target_user_id}."
+        @logger.warn "  Source user: #{source_user_id} does not have any permissions assigned. Skipping sync of permissions to #{target_user_id}."
         return
       end
 
@@ -1054,7 +1054,7 @@ module RallyUserManagement
       source_permissions = source_user.UserPermissions
 
       if source_permissions.nil? then
-        @logger.warn "  Source user: #{source_user_id} does not have any permissions assigned Skipping sync of permissions to #{target_user_id}."
+        @logger.warn "  Source user: #{source_user_id} does not have any permissions assigned. Skipping sync of permissions to #{target_user_id}."
         return
       end      
 
